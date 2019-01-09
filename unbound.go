@@ -210,10 +210,8 @@ func (u *Unbound) Resolve(name string, rrtype, rrclass uint16) (*Result, error) 
 	defer C.free(unsafe.Pointer(cname))
 	res := C.new_ub_result()
 	r := new(Result)
-	// Normally, we would call 'defer C.ub_resolve_free(res)' here, but
-	// that does not work (in Go 1.6.1), see
-	// https://github.com/miekg/unbound/issues/8
-	// This is likely related to https://github.com/golang/go/issues/15921
+	// Adding this in to test out on later unboundlib iterations
+	defer C.ub_resolve_free(res)
 	t := time.Now()
 	i := C.ub_resolve(u.ctx, cname, C.int(rrtype), C.int(rrclass), &res)
 	r.Rtt = time.Since(t)
